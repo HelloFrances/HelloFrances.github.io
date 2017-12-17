@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="遇到的问题 小编在开发一个微信端的H5通关小游戏，这个应用大致是这样子的：用户进入页面A并且根据游戏规则完成若干游戏任务，通关后自动从页面A跳转到页面B领取奖赏，简化来说就是用户完成某个动作后页面A跳转到了页面B。但是有一点值得注意，跳转到页面B之后，页面A的原始状态会改变，由未完成转变为已完成，也就是说当用户再次进入">
+<meta name="description" content="遇到的问题 小R在开发一个微信端的H5通关小游戏，这个应用大致是这样子的：用户进入页面A并且根据游戏规则完成若干游戏任务，通关后自动从页面A跳转到页面B领取奖赏，简化来说就是用户完成某个动作后页面A跳转到了页面B。但是有一点值得注意，跳转到页面B之后，页面A的原始状态会改变，由未完成转变为已完成，也就是说当用户再次进入">
 <meta name="keywords" content="浏览器缓存,History API,后退按钮">
 <meta property="og:type" content="article">
 <meta property="og:title" content="由微信浏览器在iOS下后退不刷新引发的一系列探讨">
 <meta property="og:url" content="http://yoursite.com/2017/12/08/微信内置浏览器在iOS中的奇葩表现/index.html">
-<meta property="og:site_name" content="Frances&#39;s Blog">
-<meta property="og:description" content="遇到的问题 小编在开发一个微信端的H5通关小游戏，这个应用大致是这样子的：用户进入页面A并且根据游戏规则完成若干游戏任务，通关后自动从页面A跳转到页面B领取奖赏，简化来说就是用户完成某个动作后页面A跳转到了页面B。但是有一点值得注意，跳转到页面B之后，页面A的原始状态会改变，由未完成转变为已完成，也就是说当用户再次进入页面A时，应该看到的就是已完成状态的页面A。 小编用他的水果机测试，已通关并且顺">
+<meta property="og:site_name" content="Smell the flowers">
+<meta property="og:description" content="遇到的问题 小R在开发一个微信端的H5通关小游戏，这个应用大致是这样子的：用户进入页面A并且根据游戏规则完成若干游戏任务，通关后自动从页面A跳转到页面B领取奖赏，简化来说就是用户完成某个动作后页面A跳转到了页面B。但是有一点值得注意，跳转到页面B之后，页面A的原始状态会改变，由未完成转变为已完成，也就是说当用户再次进入页面A时，应该看到的就是已完成状态的页面A。 小R用他的水果机测试，已通关并且顺">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-16T16:39:56.816Z">
+<meta property="og:updated_time" content="2017-12-17T15:58:53.869Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="由微信浏览器在iOS下后退不刷新引发的一系列探讨">
-<meta name="twitter:description" content="遇到的问题 小编在开发一个微信端的H5通关小游戏，这个应用大致是这样子的：用户进入页面A并且根据游戏规则完成若干游戏任务，通关后自动从页面A跳转到页面B领取奖赏，简化来说就是用户完成某个动作后页面A跳转到了页面B。但是有一点值得注意，跳转到页面B之后，页面A的原始状态会改变，由未完成转变为已完成，也就是说当用户再次进入页面A时，应该看到的就是已完成状态的页面A。 小编用他的水果机测试，已通关并且顺">
+<meta name="twitter:description" content="遇到的问题 小R在开发一个微信端的H5通关小游戏，这个应用大致是这样子的：用户进入页面A并且根据游戏规则完成若干游戏任务，通关后自动从页面A跳转到页面B领取奖赏，简化来说就是用户完成某个动作后页面A跳转到了页面B。但是有一点值得注意，跳转到页面B之后，页面A的原始状态会改变，由未完成转变为已完成，也就是说当用户再次进入页面A时，应该看到的就是已完成状态的页面A。 小R用他的水果机测试，已通关并且顺">
 
 
 
@@ -126,7 +126,7 @@
 
 
 
-  <title>由微信浏览器在iOS下后退不刷新引发的一系列探讨 | Frances's Blog</title>
+  <title>由微信浏览器在iOS下后退不刷新引发的一系列探讨 | Smell the flowers</title>
   
 
 
@@ -156,7 +156,7 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Frances's Blog</span>
+        <span class="site-title">Smell the flowers</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -236,13 +236,13 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/08/微信内置浏览器在iOS中的奇葩表现/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Frances Lee">
+      <meta itemprop="name" content="Ruoheng L">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Frances's Blog">
+      <meta itemprop="name" content="Smell the flowers">
     </span>
 
     
@@ -323,9 +323,9 @@
 
       
         <h3 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h3><blockquote>
-<p>小编在开发一个微信端的H5通关小游戏，这个应用大致是这样子的：用户进入页面A并且根据游戏规则完成若干游戏任务，通关后自动从页面A跳转到页面B领取奖赏，简化来说就是用户完成某个动作后页面A跳转到了页面B。但是有一点值得注意，跳转到页面B之后，页面A的原始状态会改变，由<code>未完成转变为已完成</code>，也就是说当用户再次进入页面A时，应该看到的就是<code>已完成</code>状态的页面A。</p>
-<p>小编用他的水果机测试，已通关并且顺利跳转到页面B，但是当他点击<code>返回</code>按钮，回到页面A的时候，页面A竟然还是<code>未完成</code>的状态，主动<code>刷新</code>页面，页面A才变成<code>已完成</code>；此时跳转到页面B，又再次点击<code>返回</code>按钮，页面A依然是<code>未完成</code>，刷新过后才变回<code>已完成</code>，如此反反复复。</p>
-<p>这个微信内置的<code>返回</code>按钮，不禁让人觉得浏览器仿佛有了缓存的功能。小编又用隔壁老王的Android机测试了一遍，安卓的<code>返回</code>按钮，和PC端的浏览器保持一致，并没有这个奇葩的缓存效果。</p>
+<p>小R在开发一个微信端的H5通关小游戏，这个应用大致是这样子的：用户进入页面A并且根据游戏规则完成若干游戏任务，通关后自动从页面A跳转到页面B领取奖赏，简化来说就是用户完成某个动作后页面A跳转到了页面B。但是有一点值得注意，跳转到页面B之后，页面A的原始状态会改变，由<code>未完成转变为已完成</code>，也就是说当用户再次进入页面A时，应该看到的就是<code>已完成</code>状态的页面A。</p>
+<p>小R用他的水果机测试，已通关并且顺利跳转到页面B，但是当他点击<code>返回</code>按钮，回到页面A的时候，页面A竟然还是<code>未完成</code>的状态，主动<code>刷新</code>页面，页面A才变成<code>已完成</code>；此时跳转到页面B，又再次点击<code>返回</code>按钮，页面A依然是<code>未完成</code>，刷新过后才变回<code>已完成</code>，如此反反复复。</p>
+<p>这个微信内置的<code>返回</code>按钮，不禁让人觉得浏览器仿佛有了缓存的功能。小R又用隔壁老王的Android机测试了一遍，安卓的<code>返回</code>按钮，和PC端的浏览器保持一致，并没有这个奇葩的缓存效果。</p>
 </blockquote>
 <h3 id="先解决再说"><a href="#先解决再说" class="headerlink" title="先解决再说"></a>先解决再说</h3><blockquote>
 <p>相同的页面在水果机上用Safari打开，是一样的效果：<strong>点击后退/前进按钮，浏览器默认使用页面的缓存数据，这样能够节省了重新请求页面的时间，更快地加载使得用户的浏览体验更好，据说这是H5的新特性<a href="https://sites.google.com/a/avassiliev.com/wiki/javascript/back-forward-cache" target="_blank" rel="noopener">Back-Forward Cache</a></strong>。那么是不是iOS端下的浏览器都有这种特性呢？于是手机下载了一个Chrome浏览器，访问相同的页面以及相同的操作，发现后退/前进的时候页面重载了。</p>
@@ -511,8 +511,8 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <p class="site-author-name" itemprop="name">Frances Lee</p>
-              <p class="site-description motion-element" itemprop="description">d</p>
+              <p class="site-author-name" itemprop="name">Ruoheng L</p>
+              <p class="site-description motion-element" itemprop="description"></p>
           </div>
 
           <nav class="site-state motion-element">
@@ -603,21 +603,13 @@
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">Frances Lee</span>
+  <span class="author" itemprop="copyrightHolder">Ruoheng L</span>
 
   
 </div>
 
 
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
 
 
 
