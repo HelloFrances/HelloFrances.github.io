@@ -229,6 +229,224 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/08/微信内置浏览器在iOS中的奇葩表现/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ruoheng L">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Smell the flowers">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/08/微信内置浏览器在iOS中的奇葩表现/" itemprop="url">由微信浏览器在iOS下后退不刷新引发的一系列探讨</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-08T00:11:11+08:00">
+                2017-12-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/浏览器特性/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器特性</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h3><blockquote>
+<p>小R在开发一个微信端的H5通关小游戏，这个应用大致是这样子的：用户进入页面A并且根据游戏规则完成若干游戏任务，通关后自动从页面A跳转到页面B领取奖赏，简化来说就是用户完成某个动作后页面A跳转到了页面B。但是有一点值得注意，跳转到页面B之后，页面A的原始状态会改变，由<code>未完成转变为已完成</code>，也就是说当用户再次进入页面A时，应该看到的就是<code>已完成</code>状态的页面A。</p>
+<p>小R用他的水果机测试，已通关并且顺利跳转到页面B，但是当他点击<code>返回</code>按钮，回到页面A的时候，页面A竟然还是<code>未完成</code>的状态，主动<code>刷新</code>页面，页面A才变成<code>已完成</code>；此时跳转到页面B，又再次点击<code>返回</code>按钮，页面A依然是<code>未完成</code>，刷新过后才变回<code>已完成</code>，如此反反复复。</p>
+<p>这个微信内置的<code>返回</code>按钮，不禁让人觉得浏览器仿佛有了缓存的功能。小R又用隔壁老王的Android机测试了一遍，安卓的<code>返回</code>按钮，和PC端的浏览器保持一致，并没有这个奇葩的缓存效果。</p>
+</blockquote>
+<h3 id="先解决再说"><a href="#先解决再说" class="headerlink" title="先解决再说"></a>先解决再说</h3><blockquote>
+<p>相同的页面在水果机上用Safari打开，是一样的效果：<strong>点击后退/前进按钮，浏览器默认使用页面的缓存数据，这样能够节省了重新请求页面的时间，更快地加载使得用户的浏览体验更好，据说这是H5的新特性<a href="https://sites.google.com/a/avassiliev.com/wiki/javascript/back-forward-cache" target="_blank" rel="noopener">Back-Forward Cache</a></strong>。那么是不是iOS端下的浏览器都有这种特性呢？于是手机下载了一个Chrome浏览器，访问相同的页面以及相同的操作，发现后退/前进的时候页面重载了。</p>
+<p>那么问题就变得简单许多，<strong>点击返回按钮的时候页面强制重载一下</strong>就好了，或者是<strong>根本不让浏览器有返回的机会</strong>。</p>
+<p>1.监控页面的onPageShow事件，当页面触发pageshow时重载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var isPageHide = false;</span><br><span class="line">window.addEventListener(&apos;pageshow&apos;, function () &#123;</span><br><span class="line">    if (isPageHide) &#123;</span><br><span class="line">        window.location.reload();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">window.addEventListener(&apos;pagehide&apos;, function () &#123;</span><br><span class="line">    isPageHide = true;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>2.在历史栈替换当前页面的URL</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">window.history.replaceState(url)</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="onPageShow事件"><a href="#onPageShow事件" class="headerlink" title="onPageShow事件"></a>onPageShow事件</h3><blockquote>
+<p>onpageshow事件在用户浏览网页时触发。</p>
+<p>onpageshow事件类似于onload事件，onload事件在页面第一次加载时触发，onpageshow事件在每次加载页面时触发，即onload事件在页面从浏览器缓存中读取时不触发。</p>
+<p>为了查看页面是直接从服务器上载入还是从缓存中读取，你可以使用PageTransitionEvent对象的 persisted属性来判断。如果页面从浏览器的缓存中读取该属性返回ture，否则返回false。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function isPersisted(event) &#123; </span><br><span class="line">    alert(&quot;该页面是否从浏览器缓存中读取? &quot; + event.persisted);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>PC端浏览器的支持情况</p>
+<table>
+<thead>
+<tr>
+<th>Chrome</th>
+<th style="text-align:center">Edge</th>
+<th>Firefox (Gecko)</th>
+<th>IE</th>
+<th style="text-align:center">Opera</th>
+<th>Safari</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td style="text-align:center">yes</td>
+<td>1.5 (1.8)</td>
+<td>11</td>
+<td style="text-align:center">15</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<p>移动端浏览器的支持情况</p>
+<table>
+<thead>
+<tr>
+<th>Android</th>
+<th style="text-align:center">Edge</th>
+<th>Firefox (Gecko)</th>
+<th>IE Mobile</th>
+<th style="text-align:center">Opera Mobile</th>
+<th>Safari Mobile</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2.3</td>
+<td style="text-align:center">yes</td>
+<td>?</td>
+<td>11</td>
+<td style="text-align:center">35</td>
+<td>5.1</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h3 id="回溯浏览器的历史栈和History-API"><a href="#回溯浏览器的历史栈和History-API" class="headerlink" title="回溯浏览器的历史栈和History API"></a>回溯浏览器的历史栈和History API</h3><blockquote>
+<p>浏览器历史栈的整个运作方式网上一大堆，我这里就不一一赘述了，仅提一嘴和前文有关的东西。</p>
+<p>先来说说历史栈的概念。每次改变当前页面的URL，历史栈栈顶就会压入一条新的记录。产生新的历史记录有以下几种方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1.a标签 &lt;a href=&quot;#&quot;&gt;&lt;/a&gt;</span><br><span class="line"></span><br><span class="line">2.window.location.href()</span><br><span class="line"></span><br><span class="line">3.window.history.pushState()</span><br><span class="line"></span><br><span class="line">4.window.history.replaceState()能够直接替换当前URL</span><br></pre></td></tr></table></figure>
+<p>而栈的指针，指向的是当前页面。改变指针的指向有以下几种方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1.浏览器的后退和前进</span><br><span class="line"></span><br><span class="line">2.window.history.go()</span><br><span class="line"> </span><br><span class="line">3.window.history.back()</span><br><span class="line"> </span><br><span class="line">4.window.history.forward()</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="未完待续"><a href="#未完待续" class="headerlink" title="未完待续"></a>未完待续</h3><blockquote>
+<p>看到这里应该能大致理解了上文提到的两种解决方案的可用性，后续会深入研究Back-Forward Cache以及分享一个<code>重定向和历史栈</code>的失败案例，敬请期待。</p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Archive/Misc_top_level/Working_with_BFCache" target="_blank" rel="noopener">Working with BFCache</a></p>
+<p><a href="http://harttle.land/2017/03/12/backward-forward-cache.html" target="_blank" rel="noopener">BF Cach</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/26/hello-world/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -366,173 +584,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/26/css_input/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Ruoheng L">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Smell the flowers">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/11/26/css_input/" itemprop="url">输入框常用样式书写</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-26T21:12:42+08:00">
-                2017-11-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/打野CSS/" itemprop="url" rel="index">
-                    <span itemprop="name">打野CSS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>最常用、最优雅的布局。看完本文，徒手写bootstrap里的所有input表单样式不是梦</p>
-</blockquote>
-<h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="/images/input.jpeg" style="height: 300px;display: inline-block;"></p>
-<h3 id="基本布局"><a href="#基本布局" class="headerlink" title="基本布局"></a>基本布局</h3><blockquote>
-<p>外层是一个div<br>内层是一个<code>span|img|a</code>和一个input输入框，input旁边的元素是什么视具体需求而定</p>
-</blockquote>
-<h3 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h3><blockquote>
-<p>下面先来实现一个最简单的<code>文字+输入框</code>的效果</p>
-<h6 id="html"><a href="#html" class="headerlink" title="html"></a>html</h6><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class="name"&gt;</span><br><span class="line">	&lt;span&gt;姓名&lt;span&gt;</span><br><span class="line">	&lt;input type="text" placeholder="请输入你的姓名" /&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
-<h6 id="css"><a href="#css" class="headerlink" title="css"></a>css</h6><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">* &#123;</span><br><span class="line">	box-sizing: border-box;</span><br><span class="line">&#125;</span><br><span class="line">.name &#123;</span><br><span class="line">	width: 200px;</span><br><span class="line">	margin-top: 20px;</span><br><span class="line">	position: relative;</span><br><span class="line">&#125;</span><br><span class="line">.name span &#123;</span><br><span class="line">	line-height: 20px;</span><br><span class="line">	font-size: 14px;</span><br><span class="line">	position: absolute;</span><br><span class="line">	display: block;</span><br><span class="line">	padding: 12px 10px 12px 0px;</span><br><span class="line">	color: #525B79;</span><br><span class="line">&#125;</span><br><span class="line">.name input &#123;</span><br><span class="line">	width: 100%;</span><br><span class="line">	padding: 12px 0px 12px 50px;</span><br><span class="line">	line-height: 20px;</span><br><span class="line">	font-size: 14px;</span><br><span class="line">	background-color: #eee;</span><br><span class="line">	color: #525B79;</span><br><span class="line">	border-style: none;</span><br><span class="line">	outline: none;</span><br><span class="line">	border-radius: 4px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</blockquote>
-<h3 id="额外的话"><a href="#额外的话" class="headerlink" title="额外的话"></a>额外的话</h3><blockquote>
-<p>最外层的父元素div必须<code>有宽度</code>，而内层的input的宽度设置为100%。由于本文对所有元素使用了border-box效果，因此输入框的宽度最终取决于最外层父元素定义的宽度。当要实现多个表单元素的宽度一致的效果时，采用这种方式布局比较高效。</p>
-<p>最外层的父元素div必须是<code>相对定位relative</code>，span元素则定位为absolute。如果定义了span的top|left|bottom|right却没有指定父元素的相对定位，<strong>span元素会以body为父元素去定位</strong>。</p>
-<p>span元素和input的<code>高度</code>必须一致，这里使用的是line-height。line-height只对块级元素起作用。</p>
-<p>span元素和input设置了字体大小，也需要一致，否则会出现<strong>字不在同一水平线上</strong>的情况。</p>
-</blockquote>
-<h3 id="适配各种浏览器"><a href="#适配各种浏览器" class="headerlink" title="适配各种浏览器"></a>适配各种浏览器</h3><blockquote>
-<p>我们知道，不同浏览器厂商在生产浏览器的时候会有不同的默认样式。比如Safari，默认的margin为0，而其他浏览器的默认margin值是xxx，详情可查看<a href="http://developer.doyoe.com/default-style/" target="_blank" rel="noopener">浏览器默认样式对照表</a>。为了尽可能地保证页面能够适配不同浏览器，我们需要<code>重置样式表</code>，也就是统一各个浏览器的默认样式，推荐的CSS Reset有 <a href="https://necolas.github.io/normalize.css/" target="_blank" rel="noopener">Normalise.css</a>。</p>
-</blockquote>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -578,7 +634,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -600,7 +656,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>
